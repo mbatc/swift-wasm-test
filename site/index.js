@@ -39,10 +39,10 @@ async function run_py_file(path) {
 window.onload = async function(){
   const statusText = document.getElementById("load-status-text");
   statusText.textContent = "Downloading data";
-  console.log("Download data ...");
+  console.log("Download data...");
   try {
     pyjs = await makePyJS(print, print);
-    statusText.textContent = "Done!";
+    statusText.textContent = "Loading Swift Simulator...";
     console.log("...done");
   } catch (error) {
     console.error(error);
