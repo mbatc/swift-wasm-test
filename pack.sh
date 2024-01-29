@@ -8,6 +8,7 @@ WASM_ENV=pyjs-wasm-env
 SCRIPT_DIR=$(dirname "$0")
 
 SRC_DIR=$SCRIPT_DIR/site
+SWIFT_DIR=$SCRIPT_DIR/swift
 DEPLOY_DIR=$SCRIPT_DIR/dist
 EMPACK_CONF=$SCRIPT_DIR/empack_config.yaml
 
@@ -25,6 +26,7 @@ empack pack env \
 
 cp -a $MAMBA_ROOT_PREFIX/envs/$WASM_ENV/lib_js/pyjs/. $DEPLOY_DIR
 cp -a $SRC_DIR/. $DEPLOY_DIR
+cp -a $SWIFT_DIR/swift/public/. $DEPLOY_DIR/swift
 
 echo "Site deployed to $DEPLOY_DIR"
 echo "To host the site on a server run,"
