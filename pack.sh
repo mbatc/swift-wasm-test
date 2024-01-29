@@ -1,3 +1,8 @@
+
+eval "$(micromamba shell hook --shell bash)"
+
+micromamba activate emscripten-forge
+
 WASM_ENV=pyjs-wasm-env
 
 SCRIPT_DIR=$(dirname "$0")
@@ -26,3 +31,5 @@ echo "To host the site on a server run,"
 echo ""
 echo "  python -m http.server 8080 --directory $DEPLOY_DIR"
 echo ""
+
+micromamba deactivate
