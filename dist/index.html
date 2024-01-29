@@ -6,57 +6,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Swift Web Simulator</title>
     <style>
-        html {
-            height: 100%;
-            width: 100%;
-        }
+      body, html {
+        height: 100%;
+        background-color: aliceblue;
+      }
 
-        body {
-            height: 100%;
-            width: 100%;
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
+      body {
+        margin: 0
+      }
 
-        header {
-            background-color: #333;
-            color: white;
-            padding: 10px;
-            text-align: center;
-        }
+      #header {
+        background-color: #333;
+        width: 100%;
+        padding-top: 1px;
+        padding-bottom: 1px;
+        text-align: center;
+        color:aliceblue;
+      }
 
-        main {
-            padding: 20px;
-        }
+      .row-container {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        flex-direction: column;
+        overflow: hidden;
+      }
 
-        .row-container {
-            display: flex;
-            width: 100%;
-            height: 100%;
-            flex-direction: column;
-            overflow: hidden;
-        }
+      .column {
+        float: left;
+      }
 
-        #swift-viewport {
-            flex-grow: 1;
-        }
+      #pythonInput {
+        width: 100%;
+        height: 40%;
+        box-sizing: border-box;
+      }
+
+      #outputLog {
+        height: 30%;
+        overflow: auto;
+        border: 1px solid #ccc;
+        padding: 10px;
+      }
+
+      #swift-viewport {
+        width: 100%;
+        height: 100%;
+      }
     </style>
     <script
       type="application/javascript"
       src="pyjs_runtime_browser.js"
     ></script>
     <script src="index.js"></script>
+    <script>
+        function runPythonCode() {
+            // Get the input value from the textarea
+            var pythonCode = document.getElementById("pythonInput").value;
+            var result = '';
+            try {
+                result = '' + pyjs.exec(pythonCode);
+            } catch (e) {
+                result = e.message;
+            }
+
+            // Display the output in the output log
+            var outputLog = document.getElementById("outputLog");
+            outputLog.innerHTML += "" + result + "<br>";
+            outputLog.scrollTop = outputLog.scrollHeight;
+        }
+    </script>
 </head>
 
 <body>
-    <header>
-        <h1>Swift Web Simulator</h1>
-    </header>
-    <div class="row-container">
-        <div id="swift-viewport">
-            <p id="load-status-text">Loading...</p>
+  <div id="header" style="height: 10%">
+    <h1>Swift Web Simulator</h1>
+  </div>
+
+  <div style="height: 90%;">
+    <div class="column" style="height: 100%; width: 35%;">
+        <p><strong>Python Interpreter</strong></p>
+        <textarea style="resize: none;"id="pythonInput" name="pythonInput"></textarea><br>
+        <button onclick="runPythonCode()">Run</button>
+        <div id="outputLog">
+            <!-- Output log will be displayed here -->
         </div>
     </div>
+    <div class="column" style="height: 100%; width: 65%;">
+      <div id="swift-viewport" style="text-align: center;">
+        <p id="load-status-text">Loading...</p>
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>
