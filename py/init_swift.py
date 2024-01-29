@@ -5,9 +5,6 @@ import roboticstoolbox as rtb
 import spatialmath as sm
 import numpy as np
 
-# def print(x):
-#   pyjs.js.console.log(x)
-
 try:
   from swift import Swift
 except Exception as e:
@@ -22,7 +19,7 @@ pyjs.js.console.log("Launching simulator")
 env.launch(realtime=True, comms="pyjs")
 
 # pyjs.js.console.log("Creating Panda model")
-# panda = rtb.models.Panda()
+# panda = Panda()
 # panda.q = panda.qr
 
 # pyjs.js.console.log("Initializing target position")
