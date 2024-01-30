@@ -52,8 +52,6 @@ window.onload = async function(){
 
   await run_py_file('./py/init_swift.py');
 
-  run_swift_sim_cb = pyjs.exec_eval('run_swift_sim');
-  run_swift_sim_cb.py_call().then(() => {
-    console.log("Swift simulation finished");
-  });
+  var input = document.getElementById("pythonInput");
+  input.value = await load_text('./py/default_script.py')
 };

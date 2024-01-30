@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Swift Web Simulator</title>
+    <title>Swift Simulator (Web)</title>
     <style>
       body, html {
         height: 100%;
@@ -62,7 +62,9 @@
     <script>
         function runPythonCode() {
             // Get the input value from the textarea
-            var pythonCode = document.getElementById("pythonInput").value;
+            var input = document.getElementById("pythonInput");
+            var pythonCode = input.value;
+            input.value = '';
             var result = '';
             try {
                 result = '' + pyjs.exec(pythonCode);
@@ -72,7 +74,7 @@
 
             // Display the output in the output log
             var outputLog = document.getElementById("outputLog");
-            outputLog.innerHTML += "" + result + "<br>";
+            outputLog.innerHTML += pythonCode.replace('\n','<br>') + "<br><hr>" + result + "<br>";
             outputLog.scrollTop = outputLog.scrollHeight;
         }
     </script>
@@ -80,7 +82,7 @@
 
 <body>
   <div id="header" style="height: 10%">
-    <h1>Swift Web Simulator</h1>
+    <h1>Swift Simulator (Web)</h1>
   </div>
 
   <div style="height: 90%;">

@@ -19,6 +19,35 @@ const gltfloader = new GLTFLoader();
 
 let nav_div_showing = false;
 
+const defaultParseURLCallback = (url) => {
+    ret = url;
+    if (navigator.appVersion.indexOf("Win") != -1) {
+        // console.log(ret);
+        ret = ret.slice(2);
+        // console.log(ret);
+    }
+
+    return ret;
+}
+
+let parseURLCallback = defaultParseURLCallback;
+let revokeURLCallback = (url) => {};
+function setParseURLCallback(onFetch) {
+    if (onFetch !== undefined) {
+        parseURLCallback = onFetch;
+    } else {
+        parseURLCallback = defaultFetchCallback;
+    }
+}
+
+function setRevokeURLCallback(onRevoke) {
+    if (onRevoke !== undefined) {
+        revokeURLCallback = onRevoke;
+    } else {
+        revokeURLCallback = (url) => {};
+    }
+}
+
 function sleep(milliseconds) {
     const date = Date.now();
     let currentDate = null;
@@ -98,14 +127,10 @@ function loadMesh(ob, scene, cb) {
 
     let ext = ob.filename.split('.').pop();
 
-    if (navigator.appVersion.indexOf("Win") != -1) {
-        // console.log(ob.filename);
-        ob.filename = ob.filename.slice(2);
-        // console.log(ob.filename);
-    }
+    let url = parseURLCallback(ob.filename);
 
     if (ext == 'dae') {
-        let loader = daeloader.load(ob.filename, function(collada) {
+        let loader = daeloader.load(url, function(collada) {
 
             let mesh = collada.scene;
             mesh.position.set(ob.t[0], ob.t[1], ob.t[2]);
@@ -128,7 +153,7 @@ function loadMesh(ob, scene, cb) {
             cb();
         });
     } else if (ext == 'stl') {
-        let loader = stlloader.load(ob.filename, function(geometry) {
+        let loader = stlloader.load(url, function(geometry) {
 
             let material = new THREE.MeshPhongMaterial({
                 color: new THREE.Color(
@@ -156,14 +181,15 @@ function loadMesh(ob, scene, cb) {
             cb();
         });
     } else if (ext == 'obj') {
-        let loader =  mtlloader.load(ob.filename.slice(0, ob.filename.length-3) + 'mtl',
+        mtlUrl = parseURLCallback(ob.filename.slice(0, ob.filename.length-3) + 'mtl')
+        let loader =  mtlloader.load(mtlUrl,
             function (materials) {
                 materials.preload();
 
                 // let objloader = new THREE.OBJLoader();
                 objloader.setMaterials(materials);
 
-                objloader.load(ob.filename,
+                objloader.load(url,
                     function (object) {
                         console.log(object)
 
@@ -195,7 +221,7 @@ function loadMesh(ob, scene, cb) {
             }
         );
     } else if (ext == 'gltf' || ext == 'glb') {
-        let loader = gltfloader.load(ob.filename,
+        let loader = gltfloader.load(url,
             function (object) {
 
                 let mesh = object.scene;
@@ -228,7 +254,7 @@ function loadMesh(ob, scene, cb) {
             }
         );
     } else if (ext == 'ply') {
-        let loader = plyloader.load(ob.filename,
+        let loader = plyloader.load(url,
             function (geometry) {
 
                 geometry.computeVertexNormals();
@@ -264,7 +290,7 @@ function loadMesh(ob, scene, cb) {
             }
         );
     } else if (ext == 'wrl') {
-        let loader = vrmloader.load(ob.filename,
+        let loader = vrmloader.load(url,
             function (mesh) {
 
                 mesh.castShadow = true;
@@ -291,7 +317,7 @@ function loadMesh(ob, scene, cb) {
             }
         );
     } else if (ext == 'pcd') {
-        let loader = pcdloader.load(ob.filename,
+        let loader = pcdloader.load(url,
             function (mesh) {
 
                 mesh.scale.set(ob.scale[0], ob.scale[1], ob.scale[2]);
@@ -433,31 +459,48 @@ class Robot{
 }
 
 
-class Shape{
+class Shape {
     constructor(scene, ob) {
         this.ob = ob
+        this.promised = ob.length;
+        this.loaded = 0;
+        this.model_loaded = 0;
+
         let color = Math.random() * 0xffffff;
         this.loaded = 0;
 
         let cb = () => {
-            this.loaded = 1;
+            this.loaded++;
+            if (this.loaded === this.promised) {
+                this.model_loaded = 1
+            }
         }
 
-        load(ob, scene, color, cb);
+        for (let i = 0; i < this.ob.length; ++i) {
+            load(this.ob[i], scene, color, cb);
+        }
+    }
+
+    isLoaded() {
+        return this.model_loaded;
     }
 
     set_poses(pose) {
-        let t = pose.t;
-        let q = pose.q;
-        let quat = new THREE.Quaternion(q[1], q[2], q[3], q[0]);
-        this.ob.mesh.position.set(t[0], t[1], t[2]);
-        this.ob.mesh.setRotationFromQuaternion(quat);
+        for (let i = 0; i < this.ob.length; ++i) {
+            let t = pose[i].t;
+            let q = pose[i].q;
+            let quat = new THREE.Quaternion(q[1], q[2], q[3], q[0]);
+            this.ob[i].mesh.position.set(t[0], t[1], t[2]);
+            this.ob[i].mesh.setRotationFromQuaternion(quat);
+        }
     }
 
     remove(scene) {
-        this.ob.mesh.geometry.dispose();
-        this.ob.mesh.material.dispose();
-        scene.remove(this.ob.mesh);
+        for (let i = 0; i < this.ob.length; ++i) {
+            this.ob[i].mesh.geometry.dispose();
+            this.ob[i].mesh.material.dispose();
+            scene.remove(this.ob[i].mesh);
+        }
     }
 }
 
@@ -850,4 +893,4 @@ class Radio {
 
 
 
-export {Robot, Shape, FPS, SimTime, Slider, Button, Label, Select, Checkbox, Radio};
+export {setParseURLCallback, setRevokeURLCallback, Robot, Shape, FPS, SimTime, Slider, Button, Label, Select, Checkbox, Radio};

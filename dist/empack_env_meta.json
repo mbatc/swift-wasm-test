@@ -16,6 +16,13 @@
             "filename": "robotics-toolbox-python-1.0.2.post1-hae8f5c9_1.tar.gz"
         },
         {
+            "name": "swift-sim",
+            "version": "1.0.2",
+            "build": "py311h165a908_28",
+            "filename_stem": "swift-sim-1.0.2-py311h165a908_28",
+            "filename": "swift-sim-1.0.2-py311h165a908_28.tar.gz"
+        },
+        {
             "name": "spatialgeometry",
             "version": "1.1.0",
             "build": "py311h286ba5a_0",
@@ -301,13 +308,6 @@
             "build": "pyhd8ed1ab_0",
             "filename_stem": "progress-1.6-pyhd8ed1ab_0",
             "filename": "progress-1.6-pyhd8ed1ab_0.tar.gz"
-        },
-        {
-            "name": "swift-sim",
-            "version": "1.0.2",
-            "build": "py311h165a908_21",
-            "filename_stem": "swift-sim-1.0.2-py311h165a908_21",
-            "filename": "swift-sim-1.0.2-py311h165a908_21.tar.gz"
         },
         {
             "name": "pillow",

@@ -15,9 +15,9 @@ EMPACK_CONF=$SCRIPT_DIR/empack_config.yaml
 rm -r -f $DEPLOY_DIR
 mkdir $DEPLOY_DIR
 
-if [ ! -f $EMPACK_CONF ]; then
-    curl https://raw.githubusercontent.com/emscripten-forge/recipes/main/empack_config.yaml --output $EMPACK_CONF
-fi
+# if [ ! -f $EMPACK_CONF ]; then
+#     curl https://raw.githubusercontent.com/emscripten-forge/recipes/main/empack_config.yaml --output $EMPACK_CONF
+# fi
 
 empack pack env \
     --env-prefix "$MAMBA_ROOT_PREFIX/envs/$WASM_ENV" \
