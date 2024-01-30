@@ -1,7 +1,7 @@
 
 async def run_sim():
   pyjs.js.console.log("Creating Panda model")
-  panda = Panda()
+  panda = rtb.models.Panda()
   panda.q = panda.qr
 
   pyjs.js.console.log("Initializing target position")
