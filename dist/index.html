@@ -59,25 +59,6 @@
       src="pyjs_runtime_browser.js"
     ></script>
     <script src="index.js"></script>
-    <script>
-        function runPythonCode() {
-            // Get the input value from the textarea
-            var input = document.getElementById("pythonInput");
-            var pythonCode = input.value;
-            input.value = '';
-            var result = '';
-            try {
-                result = '' + pyjs.exec(pythonCode);
-            } catch (e) {
-                result = e.message;
-            }
-
-            // Display the output in the output log
-            var outputLog = document.getElementById("outputLog");
-            outputLog.innerHTML += pythonCode.replace('\n','<br>') + "<br><hr>" + result + "<br>";
-            outputLog.scrollTop = outputLog.scrollHeight;
-        }
-    </script>
 </head>
 
 <body>
@@ -90,6 +71,7 @@
         <p><strong>Python Interpreter</strong></p>
         <textarea style="resize: none;"id="pythonInput" name="pythonInput"></textarea><br>
         <button onclick="runPythonCode()">Run</button>
+        <button onclick="loadDefaultCode()">Load Default Script</button>
         <div id="outputLog">
             <!-- Output log will be displayed here -->
         </div>

@@ -51,7 +51,29 @@ window.onload = async function(){
   }
 
   await run_py_file('./py/init_swift.py');
-
-  var input = document.getElementById("pythonInput");
-  input.value = await load_text('./py/default_script.py')
+  loadDefaultCode();
 };
+
+function runPythonCode() {
+  // Get the input value from the textarea
+  var input = document.getElementById("pythonInput");
+  var pythonCode = input.value;
+  input.value = '';
+  var result = '';
+  try {
+      result = '' + pyjs.exec(pythonCode);
+  } catch (e) {
+      result = e.message;
+  }
+
+  // Display the output in the output log
+  var outputLog = document.getElementById("outputLog");
+  outputLog.innerHTML += pythonCode.replace('\n','<br>') + "<br><hr>" + result + "<br>";
+  outputLog.scrollTop = outputLog.scrollHeight;
+}
+
+function loadDefaultCode() {
+  var input = document.getElementById("pythonInput");
+
+  load_text('./py/default_script.py').then(text => input.value = text);
+}
