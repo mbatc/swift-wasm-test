@@ -1,0 +1,41 @@
+context:
+  name: "swift-sim"
+  version: "1.0.2"
+
+package:
+  name: "{{ name|lower }}"
+  version: "{{ version }}"
+
+source:
+  path: /home/michael/swift-wasm-test/swift
+
+build:
+  number: 34
+  script: "{{ PYTHON }} -m pip install . -vv"
+
+requirements:
+  build:
+    - "{{ compiler('c') }}"
+    - "{{ compiler('cxx') }}"
+    - python                                 # [build_platform != target_platform]
+    - "cross-python_{{ target_platform }}"   # [build_platform != target_platform]
+    - numpy                                  # [build_platform != target_platform]
+    - pip
+    - setuptools
+  host:
+    - numpy
+    - python
+  run:
+    - python
+    - spatialgeometry
+    - numpy
+
+about:
+  home: https://github.com/jhavl/swift
+  summary: A Python/Javascript Robot Simulator and Visualiser
+  license: MIT
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - ihuicatl
