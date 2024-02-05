@@ -4,12 +4,6 @@ eval "$(micromamba shell hook --shell bash)"
 SCRIPT_DIR=$(dirname "$0")
 CANON_SCRIPT_DIR=$(cd "$SCRIPT_DIR"; pwd)
 
-micromamba activate emscripten-forge
-pushd ~/emscripten-forge
-python builder.py build explicit $CANON_SCRIPT_DIR/recipes/swift-sim --emscripten-wasm32 --no-skip-existing
-popd
-micromamba deactivate
-
 micromamba activate react-swift
 pushd $SCRIPT_DIR/react-swift
 # node --version
@@ -25,11 +19,6 @@ npm install
 npm run build
 popd
 micromamba deactivate
-
-micromamba activate pyjs-wasm-env
-node --version
-micromamba install swift-sim -y
-micromamba update  swift-sim -y
 
 SCRIPT_DIR=$(dirname "$0")
 

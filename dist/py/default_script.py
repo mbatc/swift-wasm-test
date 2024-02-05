@@ -11,7 +11,7 @@ async def run_sim():
   await env.add(panda)
   pyjs.js.console.log("Added Panda")
 
-  time_step = 0.05
+  time_step = 0.01
   arrived = False
 
   while not arrived:

@@ -26,12 +26,16 @@ empack pack env \
 
 cp -a $MAMBA_ROOT_PREFIX/envs/$WASM_ENV/lib_js/pyjs/. $DEPLOY_DIR
 cp -a $SRC_DIR/. $DEPLOY_DIR
-cp -a $SWIFT_DIR/swift/public/. $DEPLOY_DIR/swift
+cp -a $SWIFT_DIR/swift/out/. $DEPLOY_DIR/swift
 
 echo "Site deployed to $DEPLOY_DIR"
 echo "To host the site on a server run,"
 echo ""
 echo "  python -m http.server 8080 --directory $DEPLOY_DIR"
+echo ""
+echo "  or alternatively use,"
+echo ""
+echo "  ./run.sh"
 echo ""
 
 micromamba deactivate
