@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack://_N_E/styles/Home.module.css"],"names":[],"mappings":"AAKA,yCACI,UAAW,CACX,WACJ","file":"static/css/b1c8f48c386b471e.css","sourcesContent":[".container {\n    width: 100%;\n    height: 100%;\n}\n\n.main {\n    width: 100%;\n    height: 100%;\n}\n"],"sourceRoot":""}
