@@ -7,7 +7,7 @@ package:
   version: "{{ version }}"
 
 source:
-  path: /home/michael/swift-wasm-test/swift
+  path: "{{ SWIFT_DIR }}"
 
 build:
   number: 34

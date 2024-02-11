@@ -1,3 +1,8 @@
 swift/
 site/swift/
 pyjs-code-runner/
+
+.emscripten-forge-dir
+.swift-dir
+.react-swift-dir
+.pyjs-code-runner-dir
