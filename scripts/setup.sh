@@ -4,43 +4,47 @@ SCRIPT_DIR=$(dirname "$0")
 source $SCRIPT_DIR/init-build-env.sh
 
 if test -z $REACT_SWIFT_DIR; then
-  DEFAULT_REACT_SWIFT_DIR="~/react-swift"
+  DEFAULT_REACT_SWIFT_DIR="$HOME/react-swift"
   echo " -- Configure react-swift path"
   read -p "Where should we clone to (default is $DEFAULT_REACT_SWIFT_DIR)?: " REACT_SWIFT_DIR
 
   if test -z $REACT_SWIFT_DIR; then
     REACT_SWIFT_DIR=$DEFAULT_REACT_SWIFT_DIR
   fi
+  echo -n "$REACT_SWIFT_DIR">$_REACT_SWIFT_DIR_FILE
 fi
 
 if test -z $SWIFT_DIR; then
-  DEFAULT_SWIFT_DIR="~/swift"
+  DEFAULT_SWIFT_DIR="$HOME/swift"
   echo " -- Configure Swift path"
   read -p "Where should we clone to (default is $DEFAULT_SWIFT_DIR)?: " SWIFT_DIR
   
   if test -z $SWIFT_DIR; then
     SWIFT_DIR=$DEFAULT_SWIFT_DIR
   fi
+  echo -n "$SWIFT_DIR">$_SWIFT_DIR_FILE
 fi
 
 if test -z $EMFORGE_DIR; then
-  DEFAULT_EMFORGE_DIR="~/emscripten-forge"
+  DEFAULT_EMFORGE_DIR="$HOME/emscripten-forge"
   echo " -- Configure emscripten forge recipes path"
   read -p "Where should we clone to (default is $DEFAULT_EMFORGE_DIR)?: " EMFORGE_DIR
 
   if test -z $EMFORGE_DIR; then
     EMFORGE_DIR=$DEFAULT_EMFORGE_DIR
   fi
+  echo -n "$EMFORGE_DIR">$_EMFORGE_DIR_FILE
 fi
 
 if test -z $PYJS_RUNNER_DIR; then
-  DEFAULT_PYJS_RUNNER_DIR="~/pyjs-code-runner"
+  DEFAULT_PYJS_RUNNER_DIR="$HOME/pyjs-code-runner"
   echo " -- Configure pyjs-code-runner path"
   read -p "Where should we clone to (default is $DEFAULT_PYJS_RUNNER_DIR)?: " PYJS_RUNNER_DIR
 
   if test -z $PYJS_RUNNER_DIR; then
     PYJS_RUNNER_DIR=$DEFAULT_PYJS_RUNNER_DIR
   fi
+  echo -n "$PYJS_RUNNER_DIR">$_PYJS_RUNNER_DIR_FILE
 fi
 
 if test -z $EMSDK_DIR; then
@@ -51,13 +55,30 @@ if test -z $EMSDK_DIR; then
   if test -z $EMSDK_DIR; then
     EMSDK_DIR=$DEFAULT_EMSDK_DIR
   fi
+  echo -n "$EMSDK_DIR">$_EMSDK_DIR_FILE
 fi
 
 echo "-- Cloning dependencies"
-git clone -b "$_REACT_SWIFT_BRANCH" "$_REACT_SWIFT_GIT_URL"
-git clone -b "$_SWIFT_BRANCH" "$_SWIFT_GIT_URL"
-git clone -b "$_EMFORGE_BRANCH" "$_EMFORGE_GIT_URL"
-git clone -b "$_PYJS_RUNNER_GIT_BRANCH" "$_PYJS_RUNNER_GIT_URL"
+mkdir -p "$REACT_SWIFT_DIR"
+mkdir -p "$SWIFT_DIR"
+mkdir -p "$EMFORGE_DIR"
+mkdir -p "$PYJS_RUNNER_DIR"
+
+pushd "$REACT_SWIFT_DIR"
+git clone -b "$_REACT_SWIFT_BRANCH" "$_REACT_SWIFT_GIT_URL" .
+popd
+
+pushd "$SWIFT_DIR"
+git clone -b "$_SWIFT_BRANCH" "$_SWIFT_GIT_URL" .
+popd
+
+pushd "$EMFORGE_DIR"
+git clone -b "$_EMFORGE_BRANCH" "$_EMFORGE_GIT_URL" .
+popd
+
+pushd "$PYJS_RUNNER_DIR"
+git clone -b "$_PYJS_RUNNER_GIT_BRANCH" "$_PYJS_RUNNER_GIT_URL" .
+popd
 
 echo "-- Creating pyjs runner env ($RUNNER_ENV_NAME)"
 micromamba create \
@@ -90,4 +111,4 @@ micromamba create \
     -c https://repo.mamba.pm/conda-forge -y
 
 echo "-- Creating react-swift build environment ($REACT_SWIFT_ENV_NAME)"
-micromamba create -n $REACT_SWIFT_ENV_NAME -f $ROOT_DIR/env/react-swift-env.yaml --yes
+micromamba create -n $REACT_SWIFT_ENV_NAME -f $ROOT_DIR/envs/react-swift-env.yaml --yes

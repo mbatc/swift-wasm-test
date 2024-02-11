@@ -4,13 +4,13 @@ eval "$(micromamba shell hook --shell bash)"
 
 # Dependency repo paths
 _EMFORGE_GIT_URL="https://github.com/emscripten-forge/recipes.git"
-_EMFORGE_BRANCH="master"
+_EMFORGE_BRANCH="main"
 _REACT_SWIFT_GIT_URL="https://github.com/mbatc/react-swift.git"
 _REACT_SWIFT_BRANCH="emscripten"
 _SWIFT_GIT_URL="https://github.com/mbatc/swift.git"
 _SWIFT_GIT_BRANCH="emscripten"
 _PYJS_RUNNER_GIT_URL="https://github.com/emscripten-forge/pyjs-code-runner"
-_PYJS_RUNNER_GIT_BRANCH="master"
+_PYJS_RUNNER_GIT_BRANCH="main"
 
 SCRIPT_DIR=$(dirname "$0")
 CANON_SCRIPT_DIR=$(cd "$SCRIPT_DIR"; pwd)
