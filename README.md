@@ -7,7 +7,8 @@ This repo contains a test web page that hosts the [Swift Robotics Simulator](htt
 ```sh
 # Dependencies needed for setup process
 sudo apt install git
-sude apt install curl
+sudo apt install curl
+sudo apt install cmake
 
 # Clone this repo
 git clone https://github.com/mbatc/swift-wasm-test.git

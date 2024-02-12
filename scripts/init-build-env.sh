@@ -16,7 +16,7 @@ get_cannon_path() {
   fi
 }
 
-# Dependency repo paths
+# Common Paths
 SCRIPT_DIR=$(dirname "$0")
 CANON_SCRIPT_DIR=$(get_cannon_path "$SCRIPT_DIR")
 ROOT_DIR=$CANON_SCRIPT_DIR/..
@@ -24,6 +24,13 @@ CONFIG_DIR=$ROOT_DIR/conf
 DIST_DIR=$ROOT_DIR/dist
 SRC_DIR=$ROOT_DIR/site
 EMPACK_CONF=$ROOT_DIR/empack_config.yaml
+
+# Environment names
+EMFORGE_ENV_NAME="emscripten-forge"
+RUNNER_ENV_NAME="pyjs-code-runner"
+WEB_ENV_NAME="pyjs-wasm-env"
+REACT_SWIFT_ENV_NAME="react-swift"
+EMSDK_VERSION="3.1.45"
 
 get_var_path() {
   echo "$CONFIG_DIR/$1"
@@ -79,12 +86,6 @@ configure_path() {
     echo "   $PathName path is configured to $CurrentPath. Delete $(get_var_path "$PathName") to reconfigure this."
   fi
 }
-
-EMFORGE_ENV_NAME="emscripten-forge"
-RUNNER_ENV_NAME="pyjs-code-runner"
-WEB_ENV_NAME="pyjs-wasm-env"
-REACT_SWIFT_ENV_NAME="react-swift"
-EMSDK_VERSION="3.1.45"
 
 echo "-- Build env variables"
 echo "   SCRIPT_DIR:             $SCRIPT_DIR"

@@ -124,10 +124,12 @@ else
       -f $EMFORGE_DIR/ci_env.yml \
       --yes
   micromamba activate $EMFORGE_ENV_NAME
-  micromamba config append channels https://repo.mamba.pm/emscripten-forge --env
   playwright install
-  bash "$EMFORGE_DIR/emsdk/setup_emsdk.sh" 3.1.45 ~/emsdk
+
+  bash "$EMFORGE_DIR/emsdk/setup_emsdk.sh" $EMSDK_VERSION $(get_conf_var "emsdk-dir")
   python -m pip install git+https://github.com/DerThorsten/boa.git@python_api_v2
+
+  micromamba config append channels https://repo.mamba.pm/emscripten-forge --env
 fi
 
 
@@ -141,6 +143,11 @@ else
       -n $WEB_ENV_NAME \
       -c https://repo.mamba.pm/emscripten-forge \
       -c https://repo.mamba.pm/conda-forge -y
+  # Add local build repo and emscripten forge
+  micromamba config append channels $MAMBA_ROOT_PREFIX/envs/$EMFORGE_ENV_NAME/conda-bld --env
+  micromamba config append channels https://repo.mamba.pm/emscripten-forge --env
+  # Remove conda-forge channel (doesn't contain emscripten-32 packages)
+  micromamba config remove channels conda-forge --env
 fi
 
 

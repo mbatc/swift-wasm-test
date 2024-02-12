@@ -16,6 +16,7 @@ set_conf_var "build-number" $BUILD_NUMBER
 RECIPE=$(eval_template $RECIPE_PATH.in)
 echo "$RECIPE">$RECIPE_PATH
 
+echo "-- Activating $EMFORGE_ENV_NAME"
 micromamba activate $EMFORGE_ENV_NAME
 RECIPE_DIR=$(dirname "$RECIPE_PATH")
 pushd "$(get_conf_var "emscripten-forge-dir")" > /dev/null
@@ -23,6 +24,7 @@ python builder.py build explicit $RECIPE_DIR --emscripten-wasm32 --no-skip-exist
 popd > /dev/null
 micromamba deactivate
 
+echo "-- Activating $REACT_SWIFT_ENV_NAME"
 micromamba activate $REACT_SWIFT_ENV_NAME
 pushd "$(get_conf_var "react-swift-dir")" > /dev/null
 npm install
@@ -37,6 +39,7 @@ npm run build
 popd > /dev/null
 micromamba deactivate
 
+echo "-- Activating $WEB_ENV_NAME"
 micromamba activate $WEB_ENV_NAME
 micromamba install swift-sim -y
 micromamba update  swift-sim -y
