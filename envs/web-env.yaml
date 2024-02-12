@@ -7,3 +7,4 @@ dependencies:
   - pyjs
   - python
   - numpy
+  - robotics-toolbox-python
