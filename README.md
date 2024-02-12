@@ -44,13 +44,13 @@ The [template recipe](recipes/swift-sim/recipe.yaml.in) (recipe.yaml.in) is expo
 
 Using the recipe exported in the previous step, `builder.py` from [Emscripten Forge](https://github.com/emscripten-forge/recipes.git) is used to build the Swift python package.
 
-This step is performed within the `Emscripten Forge` conda environment.
+This step is performed within the `emscripten-forge` conda environment.
 
 ### 3. Build react-swift
 
 The build script installs react-swift dependencies and builds the package using using npm. I've found that node v16 is the most compatible with Swift. This is installed to the `react-swift` environment during setup.
 
-This step is performed within the `React Swift` conda environment.
+This step is performed within the `react-Swift` conda environment.
 
 ### 3. Build next-swift
 
@@ -58,11 +58,13 @@ This step runs the build procesd for `next-swift` which exports the react app as
 
 For this step, the `NEXT_SWIFT_BASE_PATH` environment variable is used in `next.config.js` to override the base path of the exported site. If the web page is not hosted on the root of the server, then you may need to set this to the prefix used in the URL. For example, the github.io page would use `NEXT_SWIFT_BASE_PATH=/swift-wasm-test/swift`
 
-### 4. Install and Pack
+This step is performed within the `react-Swift` conda environment.
+
+### 4. Install Swift and Pack Web Environment
 
 This step installs the Swift python package, `swift-sim` to the web environment and then uses `empack` to export the web environment to the `./dist` directory.
 
 The Web page in [site](./site/) and next-swift built in the previous step are then copied to `./dist`. The `dist` folder is then ready to be hosted on a server.
 
-# Swift Modifications
+## Swift Modifications
 
