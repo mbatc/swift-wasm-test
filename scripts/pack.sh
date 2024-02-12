@@ -1,7 +1,7 @@
 #!/bin/bash -i
 
 SCRIPT_DIR=$(dirname "$0")
-source $SCRIPT_DIR/init-build-envs.sh
+source $SCRIPT_DIR/build-env.sh
 
 micromamba activate $EMFORGE_ENV_NAME
 

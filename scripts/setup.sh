@@ -1,114 +1,144 @@
 #!/bin/bash -i
 
 SCRIPT_DIR=$(dirname "$0")
-source $SCRIPT_DIR/init-build-env.sh
+source $SCRIPT_DIR/build-env.sh
 
-if test -z $REACT_SWIFT_DIR; then
-  DEFAULT_REACT_SWIFT_DIR="$HOME/react-swift"
-  echo " -- Configure react-swift path"
-  read -p "Where should we clone to (default is $DEFAULT_REACT_SWIFT_DIR)?: " REACT_SWIFT_DIR
-
-  if test -z $REACT_SWIFT_DIR; then
-    REACT_SWIFT_DIR=$DEFAULT_REACT_SWIFT_DIR
+prompt_yes_no() {
+  local Prompt=$1
+  while : ; do
+    read -p $Prompt
+    [[ $REPLY == "y" || $REPLY == "Y" || $REPLY == "n" || $REPLY == "N" ]] && break
+  done
+  if [[ $REPLY == "Y" || $REPLY == "y" ]]; then
+    return 0;
+  else
+    return 1;
   fi
-  echo -n "$REACT_SWIFT_DIR">$_REACT_SWIFT_DIR_FILE
-fi
+}
 
-if test -z $SWIFT_DIR; then
-  DEFAULT_SWIFT_DIR="$HOME/swift"
-  echo " -- Configure Swift path"
-  read -p "Where should we clone to (default is $DEFAULT_SWIFT_DIR)?: " SWIFT_DIR
-  
-  if test -z $SWIFT_DIR; then
-    SWIFT_DIR=$DEFAULT_SWIFT_DIR
+setup_repo() {
+  local Name=$1
+  local GitURL=$2
+  local GitBranch=$3
+
+  local TargetPath=$(get_conf_path $Name)
+  local Clone=true
+
+  echo "-- Setup $Name repo in $TargetPath"
+  if test -d "$TargetPath"; then
+    pushd "$TargetPath" > /dev/null
+    local IsRepo=$(git rev-parse --is-inside-work-tree)
+    popd > /dev/null
+    if [[ "$IsRepo" == "true" ]]; then
+      echo "   Repo already exists at $TargetPath."
+      Clone=false
+    elif [ -z "$(ls -A "$TargetPath")" ]; then
+      echo "   $TargetPath already exists but is empty."
+    else
+      echo "   $TargetPath already exists and is not a git repo. Cannot continue."
+      return 1
+    fi
+  elif test -f $TargetPath; then
+    echo "   $TargetPath is a file. Cannot clone $Name repo here"
+    return 1
   fi
-  echo -n "$SWIFT_DIR">$_SWIFT_DIR_FILE
-fi
 
-if test -z $EMFORGE_DIR; then
-  DEFAULT_EMFORGE_DIR="$HOME/emscripten-forge"
-  echo " -- Configure emscripten forge recipes path"
-  read -p "Where should we clone to (default is $DEFAULT_EMFORGE_DIR)?: " EMFORGE_DIR
+  if $Clone; then
+    echo "   Creating target directory $TargetPath"
+    mkdir -p "$TargetPath"
 
-  if test -z $EMFORGE_DIR; then
-    EMFORGE_DIR=$DEFAULT_EMFORGE_DIR
+    echo "   Cloning $GitURL@$GitBranch to $TargetPath"
+    pushd "$TargetPath" > /dev/null
+    git clone -b $GitBranch $GitURL .
+    popd > /dev/null
   fi
-  echo -n "$EMFORGE_DIR">$_EMFORGE_DIR_FILE
-fi
 
-if test -z $PYJS_RUNNER_DIR; then
-  DEFAULT_PYJS_RUNNER_DIR="$HOME/pyjs-code-runner"
-  echo " -- Configure pyjs-code-runner path"
-  read -p "Where should we clone to (default is $DEFAULT_PYJS_RUNNER_DIR)?: " PYJS_RUNNER_DIR
+  pushd "$TargetPath" > /dev/null
+  local CurrentBranch=$(git rev-parse --abbrev-ref HEAD)
 
-  if test -z $PYJS_RUNNER_DIR; then
-    PYJS_RUNNER_DIR=$DEFAULT_PYJS_RUNNER_DIR
+  if ! [[ "$CurrentBranch" == "$GitBranch" ]]; then
+    if prompt_yes_no "   Switch branch from $CurrentBranch to $GitBranch (working tree changes will be stashed) [Y/n]? "; then
+      pushd "$TargetPath" > /dev/null
+      echo "   Checking out $GitBranch"
+      git stash
+      git checkout "$GitBranch"
+    fi
+  else
+    echo "   Already checked out the target branch ($GitBranch)"
   fi
-  echo -n "$PYJS_RUNNER_DIR">$_PYJS_RUNNER_DIR_FILE
-fi
 
-if test -z $EMSDK_DIR; then
-  DEFAULT_EMSDK_DIR="~/emsdk"
-  echo " -- Configure emsdk path"
-  read -p "Where should we install emsdk to (default is $DEFAULT_EMSDK_DIR)?: " EMSDK_DIR
+  popd > /dev/null
+  return 0
+}
 
-  if test -z $EMSDK_DIR; then
-    EMSDK_DIR=$DEFAULT_EMSDK_DIR
+mamba_env_exists() {
+  local EnvName=$1
+  if test -d $MAMBA_ROOT_PREFIX/envs/$EnvName; then
+    return 0
+  else
+    return 1
   fi
-  echo -n "$EMSDK_DIR">$_EMSDK_DIR_FILE
-fi
+}
+
+echo "-- Configuring paths"
+configure_path "react-swift" "$HOME/react-swift"
+configure_path "swift" "$HOME/swift"
+configure_path "emscripten-forge" "$HOME/emscripten-forge"
+configure_path "pyjs-code-runner" "$HOME/pyjs-code-runner"
+configure_path "emsdk" "$HOME/emsdk"
 
 echo "-- Cloning dependencies"
-mkdir -p "$REACT_SWIFT_DIR"
-mkdir -p "$SWIFT_DIR"
-mkdir -p "$EMFORGE_DIR"
-mkdir -p "$PYJS_RUNNER_DIR"
+setup_repo "react-swift" "https://github.com/mbatc/react-swift.git" "emscripten"
+setup_repo "swift" "https://github.com/mbatc/swift.git" "emscripten"
+setup_repo "emscripten-forge" "https://github.com/emscripten-forge/recipes.git" "main"
+setup_repo "pyjs-code-runner" "https://github.com/emscripten-forge/pyjs-code-runner" "main"
 
-pushd "$REACT_SWIFT_DIR"
-git clone -b "$_REACT_SWIFT_BRANCH" "$_REACT_SWIFT_GIT_URL" .
-popd
+if mamba_env_exists $RUNNER_ENV_NAME; then
+  echo "-- Skip creating pyjs runner env for mamba. $RUNNER_ENV_NAME already exists"
+else
+  echo "-- Creating pyjs runner env for mamba($RUNNER_ENV_NAME)"
+  micromamba create \
+      -n $RUNNER_ENV_NAME \
+      -c conda-forge python \
+      -y
+  micromamba activate $RUNNER_ENV_NAME
+  pushd "$PYJS_RUNNER_DIR"
+  python -m pip install -e .
+  popd
+  playwright install
+fi
 
-pushd "$SWIFT_DIR"
-git clone -b "$_SWIFT_BRANCH" "$_SWIFT_GIT_URL" .
-popd
+if mamba_env_exists $EMFORGE_ENV_NAME; then
+  echo "-- Skip setting up emscripten forge environment for mamba. $EMFORGE_ENV_NAME already exists"
+else
+  echo "-- Setting up emscripten forge environment for mamba ($EMFORGE_ENV_NAME)"
+  micromamba create \
+      -n $EMFORGE_ENV_NAME \
+      -f $EMFORGE_DIR/ci_env.yml \
+      --yes
+  micromamba activate $EMFORGE_ENV_NAME
+  micromamba config append channels https://repo.mamba.pm/emscripten-forge --env
+  playwright install
+  bash "$EMFORGE_DIR/emsdk/setup_emsdk.sh" 3.1.45 ~/emsdk
+  python -m pip install git+https://github.com/DerThorsten/boa.git@python_api_v2
+fi
 
-pushd "$EMFORGE_DIR"
-git clone -b "$_EMFORGE_BRANCH" "$_EMFORGE_GIT_URL" .
-popd
+if mamba_env_exists $WEB_ENV_NAME; then
+  echo "-- Skip creating web environment for mamba. $WEB_ENV_NAME already exists"
+else
+  echo "-- Creating web environment for mamba ($WEB_ENV_NAME)"
+  micromamba create \
+      --platform=emscripten-wasm32 \
+      -f $ROOT_DIR/envs/web-env.yaml  \
+      -n $WEB_ENV_NAME \
+      -c https://repo.mamba.pm/emscripten-forge \
+      -c https://repo.mamba.pm/conda-forge -y
+fi
 
-pushd "$PYJS_RUNNER_DIR"
-git clone -b "$_PYJS_RUNNER_GIT_BRANCH" "$_PYJS_RUNNER_GIT_URL" .
-popd
 
-echo "-- Creating pyjs runner env ($RUNNER_ENV_NAME)"
-micromamba create \
-    -n $RUNNER_ENV_NAME \
-    -c conda-forge python \
-    -y
-micromamba activate $RUNNER_ENV_NAME
-pushd "$PYJS_RUNNER_DIR"
-python -m pip install -e .
-popd
-playwright install
-
-echo "-- Setting up emscripten forge environment ($EMFORGE_ENV_NAME)"
-micromamba create \
-    -n $EMFORGE_ENV_NAME \
-    -f $EMFORGE_DIR/ci_env.yml \
-    --yes
-micromamba activate $EMFORGE_ENV_NAME
-micromamba config append channels https://repo.mamba.pm/emscripten-forge --env
-playwright install
-bash "$EMFORGE_DIR/emsdk/setup_emsdk.sh" 3.1.45 ~/emsdk
-python -m pip install git+https://github.com/DerThorsten/boa.git@python_api_v2
-
-echo "-- Creating web environment ($WEB_ENV_NAME)"
-micromamba create \
-    --platform=emscripten-wasm32 \
-    -f $ROOT_DIR/envs/web-env.yaml  \
-    -n $WEB_ENV_NAME \
-    -c https://repo.mamba.pm/emscripten-forge \
-    -c https://repo.mamba.pm/conda-forge -y
-
-echo "-- Creating react-swift build environment ($REACT_SWIFT_ENV_NAME)"
-micromamba create -n $REACT_SWIFT_ENV_NAME -f $ROOT_DIR/envs/react-swift-env.yaml --yes
+if mamba_env_exists $REACT_SWIFT_ENV_NAME; then
+  echo "-- Skip react-swift build environment for mamba. $REACT_SWIFT_ENV_NAME already exists"
+else
+  echo "-- Creating react-swift build environment for mamba ($REACT_SWIFT_ENV_NAME)"
+  micromamba create -n $REACT_SWIFT_ENV_NAME -f $ROOT_DIR/envs/react-swift-env.yaml --yes
+fi
