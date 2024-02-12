@@ -112,6 +112,7 @@ else
   python -m pip install -e .
   popd
   playwright install
+  micromamba deactivate
 fi
 
 
@@ -130,6 +131,7 @@ else
   python -m pip install git+https://github.com/DerThorsten/boa.git@python_api_v2
 
   micromamba config append channels https://repo.mamba.pm/emscripten-forge --env
+  micromamba deactivate
 fi
 
 
@@ -143,11 +145,14 @@ else
       -n $WEB_ENV_NAME \
       -c https://repo.mamba.pm/emscripten-forge \
       -c https://repo.mamba.pm/conda-forge -y
+  micromamba activate $WEB_ENV_NAME
+
   # Add local build repo and emscripten forge
   micromamba config append channels $MAMBA_ROOT_PREFIX/envs/$EMFORGE_ENV_NAME/conda-bld --env
   micromamba config append channels https://repo.mamba.pm/emscripten-forge --env
   # Remove conda-forge channel (doesn't contain emscripten-32 packages)
   micromamba config remove channels conda-forge --env
+  micromamba deactivate
 fi
 
 
