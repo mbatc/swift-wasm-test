@@ -1,7 +1,7 @@
 #!/bin/bash -i
 
 SCRIPT_DIR=$(dirname "$0")
-source $SCRIPT_DIR/build-env.sh
+source "$SCRIPT_DIR/init-build-env.sh"
 
 prompt_yes_no() {
   local Prompt=$1
@@ -21,7 +21,7 @@ setup_repo() {
   local GitURL=$2
   local GitBranch=$3
 
-  local TargetPath=$(get_conf_path $Name)
+  local TargetPath=$(get_conf_var $Name)
   local Clone=true
 
   echo "-- Setup $Name repo in $TargetPath"
@@ -81,22 +81,23 @@ mamba_env_exists() {
 }
 
 echo "-- Configuring paths"
-configure_path "react-swift" "$HOME/react-swift"
-configure_path "swift" "$HOME/swift"
-configure_path "emscripten-forge" "$HOME/emscripten-forge"
-configure_path "pyjs-code-runner" "$HOME/pyjs-code-runner"
-configure_path "emsdk" "$HOME/emsdk"
+configure_path "react-swift-dir" "$HOME/react-swift"
+configure_path "swift-dir" "$HOME/swift"
+configure_path "emscripten-forge-dir" "$HOME/emscripten-forge"
+configure_path "pyjs-code-runner-dir" "$HOME/pyjs-code-runner"
+configure_path "emsdk-dir" "$HOME/emsdk"
 
 echo "-- Cloning dependencies"
-setup_repo "react-swift" "https://github.com/mbatc/react-swift.git" "emscripten"
-setup_repo "swift" "https://github.com/mbatc/swift.git" "emscripten"
-setup_repo "emscripten-forge" "https://github.com/emscripten-forge/recipes.git" "main"
-setup_repo "pyjs-code-runner" "https://github.com/emscripten-forge/pyjs-code-runner" "main"
+setup_repo "react-swift-dir" "https://github.com/mbatc/react-swift.git" "emscripten"
+setup_repo "swift-dir" "https://github.com/mbatc/swift.git" "emscripten"
+setup_repo "emscripten-forge-dir" "https://github.com/emscripten-forge/recipes.git" "main"
+setup_repo "pyjs-code-runner-dir" "https://github.com/emscripten-forge/pyjs-code-runner" "main"
 
-EMFORGE_DIR=$(get_conf_path "emscripten-forge")
-SWIFT_DIR=$(get_conf_path "swift")
-REACT_SWIFT_DIR=$(get_conf_path "react-swift")
-PYJS_RUNNER_DIR=$(get_conf_path "pyjs-code-runner")
+EMFORGE_DIR=$(get_conf_var "emscripten-forge-dir")
+SWIFT_DIR=$(get_conf_var "swift-dir")
+REACT_SWIFT_DIR=$(get_conf_var "react-swift-dir")
+PYJS_RUNNER_DIR=$(get_conf_var "pyjs-code-runner-dir")
+
 
 if mamba_env_exists $RUNNER_ENV_NAME; then
   echo "-- Skip creating pyjs runner env for mamba. $RUNNER_ENV_NAME already exists"
@@ -113,6 +114,7 @@ else
   playwright install
 fi
 
+
 if mamba_env_exists $EMFORGE_ENV_NAME; then
   echo "-- Skip setting up emscripten forge environment for mamba. $EMFORGE_ENV_NAME already exists"
 else
@@ -127,6 +129,7 @@ else
   bash "$EMFORGE_DIR/emsdk/setup_emsdk.sh" 3.1.45 ~/emsdk
   python -m pip install git+https://github.com/DerThorsten/boa.git@python_api_v2
 fi
+
 
 if mamba_env_exists $WEB_ENV_NAME; then
   echo "-- Skip creating web environment for mamba. $WEB_ENV_NAME already exists"
