@@ -93,6 +93,11 @@ setup_repo "swift" "https://github.com/mbatc/swift.git" "emscripten"
 setup_repo "emscripten-forge" "https://github.com/emscripten-forge/recipes.git" "main"
 setup_repo "pyjs-code-runner" "https://github.com/emscripten-forge/pyjs-code-runner" "main"
 
+EMFORGE_DIR=$(get_conf_path "emscripten-forge")
+SWIFT_DIR=$(get_conf_path "swift")
+REACT_SWIFT_DIR=$(get_conf_path "react-swift")
+PYJS_RUNNER_DIR=$(get_conf_path "pyjs-code-runner")
+
 if mamba_env_exists $RUNNER_ENV_NAME; then
   echo "-- Skip creating pyjs runner env for mamba. $RUNNER_ENV_NAME already exists"
 else
