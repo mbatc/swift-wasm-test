@@ -45,7 +45,6 @@ jobs:
         shell: bash
       - uses: actions/upload-pages-artifact@v2
         with:
-          name: Upload pages
           path: ./dist
   deploy:
     environment:
