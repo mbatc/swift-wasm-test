@@ -1,6 +1,9 @@
 #!/bin/bash -i
 
 SCRIPT_DIR=$(dirname "$0")
+
+echo Script dir is $SCRIPT_DIR
+
 source "$SCRIPT_DIR/init-build-env.sh"
 
 prompt_yes_no() {
