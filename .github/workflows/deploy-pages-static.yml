@@ -34,6 +34,7 @@ jobs:
           environment-file: .ci_support/environment.yaml
       - name: Configure Project
         run: |
+          mkdir conf
           echo -n "$GITHUB_WORKSPACE/deps/emscripten-forge" > conf/emscripten-forge-dir
           echo -n "$GITHUB_WORKSPACE/deps/swift" > conf/swift-dir
           echo -n "$GITHUB_WORKSPACE/deps/react-swift" > conf/react-swift-dir
