@@ -40,7 +40,7 @@ jobs:
           echo -n "$GITHUB_WORKSPACE/deps/react-swift" > conf/react-swift-dir
           echo -n "$GITHUB_WORKSPACE/deps/emsdk" > conf/emsdk-dir
           echo -n "$GITHUB_WORKSPACE/deps/pyjs-code-runner" > conf/pyjs-code-runner-dir
-          sh ./scripts/setup.sh
+          $SHELL ./scripts/setup.sh
         shell: bash
       - name: Build Swift
         run: |
