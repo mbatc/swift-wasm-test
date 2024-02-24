@@ -64,7 +64,4 @@ This step is performed within the `react-Swift` conda environment.
 
 This step installs the Swift python package, `swift-sim` to the web environment and then uses `empack` to export the web environment to the `./dist` directory.
 
-The Web page in [site](./site/) and next-swift built in the previous step are then copied to `./dist`. The `dist` folder is then ready to be hosted on a server.
-
-## Swift Modifications
-
+The web page in [site](./site/) and next-swift built in the previous step are then copied to `./dist`. The `dist` folder is then ready to be hosted on a server.
