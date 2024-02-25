@@ -153,9 +153,6 @@ else
   # Remove conda-forge channel (doesn't contain emscripten-32 packages)
   micromamba config remove channels conda-forge --env
   micromamba deactivate
-
-  cat $MAMBA_ROOT_PREFIX/envs/$WEB_ENV_NAME/.mambarc
-  cat $MAMBA_ROOT_PREFIX/envs/$WEB_ENV_NAME/.condarc
 fi
 
 
