@@ -41,8 +41,14 @@ micromamba deactivate
 
 echo "-- Activating $WEB_ENV_NAME"
 micromamba activate $WEB_ENV_NAME
-micromamba install swift-sim -y
-micromamba update  swift-sim -y
+micromamba install swift-sim \
+      -c $MAMBA_ROOT_PREFIX/envs/$EMFORGE_ENV_NAME/conda-bld\
+      -c https://repo.mamba.pm/emscripten-forge \
+      -c https://repo.mamba.pm/conda-forge -y
+micromamba update  swift-sim \
+      -c $MAMBA_ROOT_PREFIX/envs/$EMFORGE_ENV_NAME/conda-bld\
+      -c https://repo.mamba.pm/emscripten-forge \
+      -c https://repo.mamba.pm/conda-forge -y
 
 source $SCRIPT_DIR/pack.sh
 
