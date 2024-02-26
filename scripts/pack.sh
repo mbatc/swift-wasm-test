@@ -13,6 +13,13 @@ empack pack env \
     --config $EMPACK_CONF \
     --outdir $DIST_DIR
 
+echo "-- ls $MAMBA_ROOT_PREFIX/envs/$WEB_ENV_NAME"
+ls $MAMBA_ROOT_PREFIX/envs/$WEB_ENV_NAME
+echo "-- ls $MAMBA_ROOT_PREFIX/envs/$WEB_ENV_NAME/lib_js"
+ls $MAMBA_ROOT_PREFIX/envs/$WEB_ENV_NAME/lib_js
+echo "-- ls $MAMBA_ROOT_PREFIX/envs/$WEB_ENV_NAME/lib_js/pyjs"
+ls $MAMBA_ROOT_PREFIX/envs/$WEB_ENV_NAME/lib_js/pyjs
+
 cp -a $MAMBA_ROOT_PREFIX/envs/$WEB_ENV_NAME/lib_js/pyjs/. $DIST_DIR
 cp -a $SRC_DIR/. $DIST_DIR
 cp -a "$(get_conf_var "swift-dir")/swift/out/." $DIST_DIR/swift
