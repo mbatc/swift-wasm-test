@@ -44,6 +44,7 @@ jobs:
         shell: bash
       - name: Build Swift
         run: |
+          export NEXT_SWIFT_BASE_PATH='swift-wasm-test/swift'
           $SHELL ./scripts/build.sh
         shell: bash
       - uses: actions/upload-pages-artifact@v2
