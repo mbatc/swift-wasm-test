@@ -31,7 +31,7 @@ jobs:
         with:
           environment-file: envs/ci-env.yaml
           environment-name: ci-env
-          micromamba-version: '0.23.2'
+          micromamba-version: '1.5.6'
       - name: Configure Project
         run: |
           mkdir conf
