@@ -15,10 +15,10 @@ empack pack env \
 
 echo "-- ls $MAMBA_ROOT_PREFIX/envs/$WEB_ENV_NAME"
 ls $MAMBA_ROOT_PREFIX/envs/$WEB_ENV_NAME
-echo "-- ls $MAMBA_ROOT_PREFIX/envs/$WEB_ENV_NAME/lib_js"
-ls $MAMBA_ROOT_PREFIX/envs/$WEB_ENV_NAME/lib_js
-echo "-- ls $MAMBA_ROOT_PREFIX/envs/$WEB_ENV_NAME/lib_js/pyjs"
-ls $MAMBA_ROOT_PREFIX/envs/$WEB_ENV_NAME/lib_js/pyjs
+echo "-- ls $MAMBA_ROOT_PREFIX/envs/$WEB_ENV_NAME/lib"
+ls $MAMBA_ROOT_PREFIX/envs/$WEB_ENV_NAME/lib
+echo "-- ls $MAMBA_ROOT_PREFIX/envs/$WEB_ENV_NAME/lib/pyjs"
+ls $MAMBA_ROOT_PREFIX/envs/$WEB_ENV_NAME/lib/pyjs
 
 cp -a $MAMBA_ROOT_PREFIX/envs/$WEB_ENV_NAME/lib_js/pyjs/. $DIST_DIR
 cp -a $SRC_DIR/. $DIST_DIR
