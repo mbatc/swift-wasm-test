@@ -140,7 +140,7 @@ if mamba_env_exists $WEB_ENV_NAME; then
 else
   echo "-- Creating web environment for mamba ($WEB_ENV_NAME)"
   micromamba create \
-      --platform=emscripten-wasm32 \
+      --platform emscripten-wasm32 \
       -f $ROOT_DIR/envs/web-env.yaml  \
       -n $WEB_ENV_NAME \
       -c https://repo.mamba.pm/emscripten-forge \
