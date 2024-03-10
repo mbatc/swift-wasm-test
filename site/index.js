@@ -32,7 +32,7 @@ async function load_text(loc){
 
 async function run_py_file(path) {
   console.log(`Running ${path}`);
-  src = await load_text('./py/init_swift.py');
+  src = await load_text(path);
   pyjs.exec(src)
 }
 

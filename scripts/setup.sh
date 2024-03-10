@@ -98,7 +98,6 @@ SWIFT_DIR=$(get_conf_var "swift-dir")
 REACT_SWIFT_DIR=$(get_conf_var "react-swift-dir")
 PYJS_RUNNER_DIR=$(get_conf_var "pyjs-code-runner-dir")
 
-
 if mamba_env_exists $RUNNER_ENV_NAME; then
   echo "-- Skip creating pyjs runner env for mamba. $RUNNER_ENV_NAME already exists"
 else
@@ -114,7 +113,6 @@ else
   playwright install
   micromamba deactivate
 fi
-
 
 if mamba_env_exists $EMFORGE_ENV_NAME; then
   echo "-- Skip setting up emscripten forge environment for mamba. $EMFORGE_ENV_NAME already exists"
@@ -133,7 +131,6 @@ else
   micromamba config append channels https://repo.mamba.pm/emscripten-forge --env
   micromamba deactivate
 fi
-
 
 if mamba_env_exists $WEB_ENV_NAME; then
   echo "-- Skip creating web environment for mamba. $WEB_ENV_NAME already exists"
